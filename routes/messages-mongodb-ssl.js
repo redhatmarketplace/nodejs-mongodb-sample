@@ -4,8 +4,24 @@
  *--------------------------------------------------------------------------------------------*/
 
 const mongoose = require('mongoose')
+const fs = require('fs')
 
-const mongoURI = "mongodb://user:password@localhost:27017/guestbook"
+const username = "#USERNAME#"
+const password = "#PASSWORD#"
+const server = "#SERVERNAME#"
+const database = "#USERNAME#-guestbook"
+
+const mongoURI = `mongodb://${username}:${password}@${server}:27017/${database}?authSource=admin&replicaSet=replset`
+
+var sslCA = [fs.readFileSync('./keys/mongodb.cert')];
+var options = {
+  useNewUrlParser: true,
+  connectTimeoutMS: 20000,
+  reconnectTries: 1,
+  ssl: true,
+  sslValidate: true,
+  sslCA,
+};
 
 const db = mongoose.connection;
 
@@ -25,7 +41,10 @@ const connectToMongoDB = async () => {
     await mongoose.connect(mongoURI, {
         useNewUrlParser: true,
         connectTimeoutMS: 2000,
-        reconnectTries: 1
+        reconnectTries: 1,
+        ssl: true,
+        sslValidate: true,
+        sslCA,
     })
 };
 
